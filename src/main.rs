@@ -5,11 +5,13 @@ mod commands {
     pub mod add;
     pub mod init;
     pub mod logs;
+    pub mod commit;
 }
 
 use commands::add;
 use commands::init;
 use commands::logs;
+use commands::commit;
 
 fn main() {
     let supported_archs = ["x86_64", "x86", "arm", "riscv64"];
@@ -24,7 +26,11 @@ fn main() {
                         eprintln!("Error initializing: {}", e)
                     }
                 }
-                Some("commit") => println!("commit"),
+                Some("commit") => {
+                    if let Some(name) = args.get(2) {
+                        commit::commit_cmd(name);
+                    }
+                }
                 Some("push") => println!("push"),
                 Some("add") => {
                     if let Some(file) = args.get(2) {
@@ -44,7 +50,9 @@ fn main() {
                 ),
             }
         } else {
-            eprintln!("fatal: not a sk repository (or any of the parent directories): .sk")
+            if let Err(e) = init::init_cmd() {
+                eprintln!("Error initializing: {}", e)
+            }
         }
     } else {
         println!("sk doesn't support your CPU currently.")
