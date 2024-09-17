@@ -1,7 +1,9 @@
 use std::{fs::File, io::Read, path::Path};
 
+const LOGS_PATH: &str = ".sk/logs";
+
 fn read_file() {
-    let file_path = Path::new(".sk/logs");
+    let file_path = Path::new(LOGS_PATH);
 
     if file_path.exists() {
         let mut log_file = match File::open(file_path) {

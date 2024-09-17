@@ -6,12 +6,18 @@ mod commands {
     pub mod init;
     pub mod logs;
     pub mod commit;
+    pub mod info;
+    pub mod push;
 }
+
+mod utils;
 
 use commands::add;
 use commands::init;
 use commands::logs;
 use commands::commit;
+use commands::info;
+use commands::push;
 
 fn main() {
     let supported_archs = ["x86_64", "x86", "arm", "riscv64"];
@@ -28,10 +34,10 @@ fn main() {
                 }
                 Some("commit") => {
                     if let Some(name) = args.get(2) {
-                        commit::commit_cmd(name);
+                        let _ = commit::commit_cmd(name);
                     }
                 }
-                Some("push") => println!("push"),
+                Some("push") => push::push_cmd(),
                 Some("add") => {
                     if let Some(file) = args.get(2) {
                         if let Err(e) = add::add_cmd(file) {
@@ -44,6 +50,7 @@ fn main() {
                 Some("clone") => println!("clone"),
                 Some("pull") => println!("pull"),
                 Some("logs") => logs::logs_cmd(),
+                Some("info") => info::info_cmd().expect("dsfdf"),
                 _ => println!(
                     "sk: {} is not a sk command. See 'sk --help'.",
                     args.get(1).as_slice()[0]

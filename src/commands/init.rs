@@ -7,6 +7,11 @@ use std::{
 const BOLD: &str = "\x1b[1m";
 const ENDCOLOR: &str = "\x1b[0m";
 
+const CONFIG_PATH: &str = ".sk/config";
+// const COMMIT_PATH: &str = ".sk/commit";
+// const CHANGES_PATH: &str = ".sk/changes";
+
+
 fn prompt_input(prompt: &str) -> io::Result<String> {
     print!("{}", prompt);
     io::stdout().flush()?;
@@ -17,9 +22,9 @@ fn prompt_input(prompt: &str) -> io::Result<String> {
 }
 
 fn check_file() -> io::Result<bool> {
-    let file_path = Path::new(".sk/config");
+    let file_path = Path::new(CONFIG_PATH);
     if file_path.exists() {
-        println!("File {BOLD}'./.sk/config'{ENDCOLOR} already exists!");
+        println!("File {BOLD}{CONFIG_PATH}{ENDCOLOR} already exists!");
         print!("Do you want to remake it? [y/{BOLD}N{ENDCOLOR}] ");
         io::stdout().flush()?;
 
@@ -40,12 +45,12 @@ fn create_folder() -> io::Result<()> {
     let dir_path = Path::new(".sk");
 
     if dir_path.exists() {
-        println!("Directory {BOLD}'./.sk'{ENDCOLOR} already exists.");
+        println!("Directory {BOLD}.sk{ENDCOLOR} already exists.");
     } else {
         match fs::create_dir(dir_path) {
-            Ok(_) => println!("Directory '.sk' created successfully."),
+            Ok(_) => println!("Directory {BOLD}.sk{ENDCOLOR} created successfully."),
             Err(e) => {
-                eprintln!("Failed to create directory '.sk': {}", e);
+                eprintln!("Failed to create directory {BOLD}.sk{ENDCOLOR}: {}", e);
                 return Err(e);
             }
         }
@@ -68,10 +73,7 @@ pub fn init_cmd() -> io::Result<()> {
     let repository = prompt_input("Repository URL: ")?;
 
     for (license_words, author_words) in license.split("-").zip(author.split("-")) {
-        println!("{}", license_words);
         splited_license.push(license_words.to_string());
-
-        println!("{}", author_words);
         splited_authors.push(author_words.to_string());
     }
 
@@ -80,19 +82,23 @@ pub fn init_cmd() -> io::Result<()> {
 name = "{}"
 authors = {:?} 
 license = {:?}
-repository = "{}""#,
+repository = "{}"
+
+"#,
         project_name, splited_authors, splited_license, repository
     );
 
     match File::create(".sk/config") {
         Ok(mut file) => {
             if let Err(e) = file.write_all(setup_template.trim().as_bytes()) {
-                eprintln!("Failed to write to file '.sk/config': {}", e);
+                eprintln!("Failed to write to file {BOLD}{CONFIG_PATH}{ENDCOLOR}: {}", e);
                 return Err(e);
+            } else {
+                println!("File was successfully saved in the {BOLD}.sk{ENDCOLOR} directory.")
             }
         }
         Err(e) => {
-            eprintln!("Failed to create file '.sk/config': {}", e);
+            eprintln!("Failed to create file {BOLD}{CONFIG_PATH}{ENDCOLOR}: {}", e);
             return Err(e);
         }
     }
