@@ -1,0 +1,2 @@
+[skignore]
+ignored = ["target", ".git"]
