@@ -8,9 +8,6 @@ const BOLD: &str = "\x1b[1m";
 const ENDCOLOR: &str = "\x1b[0m";
 
 const CONFIG_PATH: &str = ".sk/config";
-// const COMMIT_PATH: &str = ".sk/commit";
-// const CHANGES_PATH: &str = ".sk/changes";
-
 
 fn prompt_input(prompt: &str) -> io::Result<String> {
     print!("{}", prompt);
@@ -59,7 +56,6 @@ fn create_folder() -> io::Result<()> {
 }
 
 pub fn init_cmd() -> io::Result<()> {
-    create_folder()?;
     if !check_file()? {
         return Ok(());
     }
@@ -88,13 +84,18 @@ repository = "{}"
         project_name, splited_authors, splited_license, repository
     );
 
+    create_folder()?;
+
     match File::create(".sk/config") {
         Ok(mut file) => {
             if let Err(e) = file.write_all(setup_template.trim().as_bytes()) {
-                eprintln!("Failed to write to file {BOLD}{CONFIG_PATH}{ENDCOLOR}: {}", e);
+                eprintln!(
+                    "Failed to write to file {BOLD}{CONFIG_PATH}{ENDCOLOR}: {}",
+                    e
+                );
                 return Err(e);
             } else {
-                println!("File was successfully saved in the {BOLD}.sk{ENDCOLOR} directory.")
+                println!("Configuration file was successfully saved in the {BOLD}.sk{ENDCOLOR} directory.")
             }
         }
         Err(e) => {

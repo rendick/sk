@@ -14,6 +14,7 @@ const BOLD: &str = "\x1b[1m";
 const ENDCOLOR: &str = "\x1b[0m";
 
 const CHANGES_PATH: &str = ".sk/changes";
+const SKIGNORE_PATH: &str = ".skignore";
 
 #[derive(Debug, Deserialize)]
 struct SkignoreConfig {
@@ -25,25 +26,25 @@ struct Skignore {
     ignored: Vec<String>,
 }
 
-// fn skignore() {
-//     println!("sdfhsdkfh")
-// }
-
 fn parse_dir(file: &str, collected_paths: &mut Vec<String>) -> io::Result<()> {
+    if !Path::new(SKIGNORE_PATH).exists() {
+        return Ok(());
+    }
+
     let all_dirs_pattern = format!("{}/{}", file, "*");
-    let contents = fs::read_to_string(".skignore")?;
+    let contents = fs::read_to_string(SKIGNORE_PATH)?;
     let config: SkignoreConfig = match toml::de::from_str(&contents) {
         Ok(config) => config,
         Err(e) => {
-            eprintln!("Error parsing .skignore: {:?}", e);
+            eprintln!("Error parsing {SKIGNORE_PATH}: {:?}", e);
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
-                "Invalid .skignore format",
+                "Invalid {SKIGNORE_PATH} format",
             ));
         }
     };
 
-    for entry in glob(&all_dirs_pattern).expect("sdkfldsj") {
+    for entry in glob(&all_dirs_pattern).expect("Error checking files.") {
         match entry {
             Ok(path) => {
                 if path.is_dir() {
@@ -71,14 +72,17 @@ fn parse_dir(file: &str, collected_paths: &mut Vec<String>) -> io::Result<()> {
 }
 
 pub fn add_cmd(file: &str) -> std::io::Result<()> {
+    println!("{}", file.replace("\",\"", " "));
     if Path::new(CHANGES_PATH).exists() {
         loop {
             print!(
                 "The file {BOLD}{CHANGES_PATH}{ENDCOLOR} exists. Do you want to rewrite it? [Y/n] "
             );
+
             io::stdout().flush()?;
             let mut rewrite_input = String::new();
             io::stdin().read_line(&mut rewrite_input)?;
+
             if ["", "y", "Y"].contains(&rewrite_input.trim()) {
                 fs::remove_file(CHANGES_PATH)?;
                 break;
@@ -93,10 +97,15 @@ pub fn add_cmd(file: &str) -> std::io::Result<()> {
     if ["."].contains(&file) {
         parse_dir(file, &mut collected_paths)?;
     } else {
-        collected_paths.push(file.to_string())
+        for paths_to_check in file.replace("\",\"", " ").split(" ") {
+            if Path::new(paths_to_check).exists() {
+                println!("Exist: {paths_to_check}");
+                collected_paths.push(paths_to_check.to_string())
+            }
+        }
     }
 
-    let file_vec_toml = collected_paths
+    let file_to_vec_toml = collected_paths
         .iter()
         .map(|f| format!("\"{}\"", f.trim()))
         .collect::<Vec<_>>()
@@ -106,7 +115,7 @@ pub fn add_cmd(file: &str) -> std::io::Result<()> {
         r#"[modifications]
 changes = [{}]
 "#,
-        file_vec_toml
+        file_to_vec_toml
     );
 
     let mut change_file = File::create(CHANGES_PATH)?;

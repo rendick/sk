@@ -1,2 +1,7 @@
 /target
 .sk/*
+debug/
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
