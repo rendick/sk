@@ -1,23 +1,16 @@
 use std::{
     fs,
-    io::{self, Write},
     path::Path,
 };
 
-const BOLD: &str = "\x1b[1m";
-const ENDCOLOR: &str = "\x1b[0m";
+use crate::utilities::prompt::prompt_input;
 
-const CHANGES_PATH: &str = ".sk/changes";
-const COMMIT_PATH: &str = ".sk/commit";
-
-fn prompt(prompt: &str) -> io::Result<String> {
-    print!("{}", prompt);
-    io::stdout().flush()?;
-
-    let mut input = String::new();
-    io::stdin().read_line(&mut input)?;
-    Ok(input.trim().to_string())
-}
+use crate::utilities::constants::{
+    BOLD,
+    ENDCOLOR,
+    CHANGES_PATH,
+    COMMIT_PATH
+};
 
 pub fn clean_cmd() {
     if !Path::new(COMMIT_PATH).exists() && !Path::new(CHANGES_PATH).exists() {
@@ -30,7 +23,7 @@ pub fn clean_cmd() {
     }
 
     let clean_input =
-        match prompt(&format!("Do you want to clear the {BOLD}{CHANGES_PATH}{ENDCOLOR} and {BOLD}{COMMIT_PATH}{ENDCOLOR} the files? [y/N] ")) {
+        match prompt_input(&format!("Do you want to clear the {BOLD}{CHANGES_PATH}{ENDCOLOR} and {BOLD}{COMMIT_PATH}{ENDCOLOR} the files? [y/N] ")) {
             Ok(input) => input,
             Err(_) => {
                 println!("Failed to read input.");

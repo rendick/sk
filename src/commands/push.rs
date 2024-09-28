@@ -2,11 +2,7 @@ use serde::Deserialize;
 use std::{fs, path::Path};
 use toml;
 
-const BOLD: &str = "\x1b[1m";
-const ENDCOLOR: &str = "\x1b[0m";
-
-const CONFIG_PATH: &str = ".sk/config";
-const COMMIT_PATH: &str = ".sk/commit";
+use crate::utilities::constants::{BOLD, COMMIT_PATH, CONFIG_PATH, ENDCOLOR};
 
 #[derive(Deserialize)]
 struct Modifications {

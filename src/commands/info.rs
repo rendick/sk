@@ -1,10 +1,11 @@
 use serde::Deserialize;
 use std::{fs, path::Path};
 
-const BOLD: &str = "\x1b[1m";
-const ENDCOLOR: &str = "\x1b[0m";
-
-const CONFIG_PATH: &str = ".sk/config";
+use crate::utilities::constants::{
+    CONFIG_PATH,
+    BOLD,
+    ENDCOLOR
+};
 
 #[derive(Deserialize)]
 struct Project {

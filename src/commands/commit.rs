@@ -6,12 +6,13 @@ use std::{
 
 use chrono::Local;
 
-const BOLD: &str = "\x1b[1m";
-const ENDCOLOR: &str = "\x1b[0m";
-
-const CHANGES_PATH: &str = ".sk/changes";
-const LOGS_PATH: &str = ".sk/logs";
-const COMMIT_PATH: &str = ".sk/commit";
+use crate::utilities::constants::{
+    BOLD,
+    ENDCOLOR,
+    CHANGES_PATH,
+    LOGS_PATH,
+    COMMIT_PATH
+};
 
 fn write_logs(commit_name: &str) -> std::io::Result<()> {
     let mut log_file_content = if Path::new(LOGS_PATH).exists() {

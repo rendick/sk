@@ -1,6 +1,6 @@
 use std::{fs::File, io::Read, path::Path};
 
-const LOGS_PATH: &str = ".sk/logs";
+use crate::utilities::constants::LOGS_PATH;
 
 fn read_file() {
     let file_path = Path::new(LOGS_PATH);

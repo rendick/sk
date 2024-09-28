@@ -4,19 +4,12 @@ use std::{
     path::Path,
 };
 
-const BOLD: &str = "\x1b[1m";
-const ENDCOLOR: &str = "\x1b[0m";
-
-const CONFIG_PATH: &str = ".sk/config";
-
-fn prompt_input(prompt: &str) -> io::Result<String> {
-    print!("{}", prompt);
-    io::stdout().flush()?;
-
-    let mut input = String::new();
-    io::stdin().read_line(&mut input)?;
-    Ok(input.trim().to_string())
-}
+use crate::utilities::prompt::prompt_input;
+use crate::utilities::constants::{
+    CONFIG_PATH,
+    BOLD,
+    ENDCOLOR
+};
 
 fn check_file() -> io::Result<bool> {
     let file_path = Path::new(CONFIG_PATH);

@@ -10,11 +10,12 @@ use toml;
 extern crate glob;
 use glob::glob;
 
-const BOLD: &str = "\x1b[1m";
-const ENDCOLOR: &str = "\x1b[0m";
-
-const CHANGES_PATH: &str = ".sk/changes";
-const SKIGNORE_PATH: &str = ".skignore";
+use crate::utilities::constants::{
+    BOLD,
+    ENDCOLOR,
+    CHANGES_PATH,
+    SKIGNORE_PATH
+};
 
 #[derive(Debug, Deserialize)]
 struct SkignoreConfig {
