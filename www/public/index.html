@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>File List</title>
+    <!-- Include marked.js from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body>
+    <div class="header">
+      <center>
+        <div class="header-center">
+          <a class="active" href="/">Repository</a>
+          <a href="/commits">Commits</a>
+          <a href="/config">Config</a>
+        </div>
+      </center>
+    </div>
+    <div class="container">
+      <div class="files">
+        <h1>
+          <a href="/api/files" style="text-decoration: none; font-size: 35px"
+            >Files</a
+          >
+        </h1>
+        <ul id="file-list"></ul>
+      </div>
+      <div class="description">
+        <div class="README">
+          <p>
+            <b
+              ><a
+                href="/api/readme"
+                style="text-decoration: none; font-size: 25px"
+                >README.md</a
+              ></b
+            >
+          </p>
+          <pre
+            class="readme"
+            style="font-family: 'Courier New', Courier, monospace"
+          ></pre>
+        </div>
+        <hr />
+        <div class="LICENSE">
+          <p>
+            <b
+              ><a
+                href="/api/license"
+                style="text-decoration: none; font-size: 25px"
+                >LICENSE</a
+              ></b
+            >
+          </p>
+          <pre
+            class="license"
+            style="font-family: 'Courier New', Courier, monospace"
+          ></pre>
+        </div>
+      </div>
+    </div>
+    <script src="./fetch.js"></script>
+  </body>
+</html>

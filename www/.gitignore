@@ -1,13 +1,3 @@
-/target
-.sk/*
-debug/
-target/
-Cargo.lock
-**/*.rs.bk
-*.pdb
-*.tar.gz
-.skignore
-
 logs
 *.log
 npm-debug.log*
