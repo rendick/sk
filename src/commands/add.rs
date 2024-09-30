@@ -10,12 +10,7 @@ use toml;
 extern crate glob;
 use glob::glob;
 
-use crate::utilities::constants::{
-    BOLD,
-    ENDCOLOR,
-    CHANGES_PATH,
-    SKIGNORE_PATH
-};
+use crate::utilities::constants::{BOLD, CHANGES_PATH, ENDCOLOR, SKIGNORE_PATH};
 
 #[derive(Debug, Deserialize)]
 struct SkignoreConfig {
@@ -28,21 +23,25 @@ struct Skignore {
 }
 
 fn parse_dir(file: &str, collected_paths: &mut Vec<String>) -> io::Result<()> {
-    if !Path::new(SKIGNORE_PATH).exists() {
-        return Ok(());
-    }
+    let skignore_exists = Path::new(SKIGNORE_PATH).exists();
 
     let all_dirs_pattern = format!("{}/{}", file, "*");
-    let contents = fs::read_to_string(SKIGNORE_PATH)?;
-    let config: SkignoreConfig = match toml::de::from_str(&contents) {
-        Ok(config) => config,
-        Err(e) => {
-            eprintln!("Error parsing {SKIGNORE_PATH}: {:?}", e);
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidData,
-                "Invalid {SKIGNORE_PATH} format",
-            ));
+
+    let config = if skignore_exists {
+        let contents = fs::read_to_string(SKIGNORE_PATH)?;
+
+        match toml::de::from_str::<SkignoreConfig>(&contents) {
+            Ok(config) => Some(config),
+            Err(e) => {
+                eprintln!("Error parsing {SKIGNORE_PATH}: {:?}", e);
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    "Invalid {SKIGNORE_PATH} format",
+                ));
+            }
         }
+    } else {
+        None
     };
 
     for entry in glob(&all_dirs_pattern).expect("Error checking files.") {
@@ -54,7 +53,15 @@ fn parse_dir(file: &str, collected_paths: &mut Vec<String>) -> io::Result<()> {
                         .unwrap_or_default()
                         .to_string_lossy()
                         .to_string();
-                    if config.skignore.ignored.contains(&file_name) {
+
+                    if skignore_exists
+                        && config
+                            .as_ref()
+                            .unwrap()
+                            .skignore
+                            .ignored
+                            .contains(&file_name)
+                    {
                         continue;
                     }
 

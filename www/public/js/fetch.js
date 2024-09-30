@@ -6,6 +6,7 @@ fetch("/api/files")
     files.forEach((file) => {
       const listItem = document.createElement("li");
       const link = document.createElement("a");
+
       link.href = `/file?path=${encodeURIComponent(file)}`;
       link.textContent = file;
       listItem.appendChild(link);
@@ -16,22 +17,18 @@ fetch("/api/files")
     console.error("Error fetching files:", err);
   });
 
-fetch("/api/readme")
-  .then((response) => response.json())
-  .then((data) => {
-    const readmeElement = document.querySelector(".readme");
-    readmeElement.textContent = data.content;
-  })
-  .catch((err) => {
-    console.error();
-  });
+function fetchOptimize(apiname, selector) {
+  fetch(`/api/${apiname}`)
+    .then((response) => response.json())
+    .then((data) => {
+      const readmeElement = document.querySelector(selector);
+      readmeElement.textContent = data.content;
+    })
+    .catch((err) => {
+      console.error();
+    });
+}
 
-fetch("/api/license")
-  .then((response) => response.json())
-  .then((data) => {
-    const readmeElement = document.querySelector(".license");
-    readmeElement.textContent = data.content;
-  })
-  .catch((err) => {
-    console.error();
-  });
+fetchOptimize("readme", ".readme");
+fetchOptimize("license", ".license");
+fetchOptimize("name", ".names");

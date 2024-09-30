@@ -1,14 +1,16 @@
 use std::{
+    env,
     fs::{self, File},
     io::{self, Write},
     path::Path,
+    process,
 };
 
+use crate::utilities::constants::{BOLD, CONFIG_PATH, ENDCOLOR, SK_PATH};
 use crate::utilities::prompt::prompt_input;
-use crate::utilities::constants::{
-    CONFIG_PATH,
-    BOLD,
-    ENDCOLOR
+use crate::utilities::www::{
+    COMMIT, COMMIT_PATH, CONFIG, CONFIG_DIR, FETCH, FETCH_PATH, INDEX, INDEX_PATH, JSON_CONFIG,
+    JSON_CONFIG_PATH, MAIN, MAIN_PATH, STYLE_CSS, STYLE_PATH,
 };
 
 fn check_file() -> io::Result<bool> {
@@ -32,7 +34,7 @@ fn check_file() -> io::Result<bool> {
 }
 
 fn create_folder() -> io::Result<()> {
-    let dir_path = Path::new(".sk");
+    let dir_path = Path::new(SK_PATH);
 
     if dir_path.exists() {
         println!("Directory {BOLD}.sk{ENDCOLOR} already exists.");
@@ -53,13 +55,47 @@ pub fn init_cmd() -> io::Result<()> {
         return Ok(());
     }
 
+    let web_server = prompt_input(
+        "Would you like to create a sk repository with the ability to be hosted on the internet? [Y/n] ",
+    )?;
+
+    if ["", "Y", "y"].contains(&web_server.as_str()) {
+        let dirs_to_create = ["./public/js", "./public/style", "./repo"];
+
+        for dir in dirs_to_create {
+            if !Path::new(dir).exists() {
+                fs::create_dir_all(dir)?;
+            }
+        }
+
+        let files_to_write = [
+            (INDEX, INDEX_PATH),
+            (FETCH, FETCH_PATH),
+            (MAIN, MAIN_PATH),
+            (COMMIT, COMMIT_PATH),
+            (CONFIG, CONFIG_DIR),
+            (STYLE_CSS, STYLE_PATH),
+            (JSON_CONFIG, JSON_CONFIG_PATH),
+        ];
+
+        for (content, file_path) in files_to_write {
+            if let Some(parent_dir) = Path::new(file_path).parent() {
+                fs::create_dir_all(parent_dir)?;
+            }
+
+            fs::write(file_path, content)?;
+        }
+    }
+
     let mut splited_authors: Vec<String> = Vec::new();
     let mut splited_license: Vec<String> = Vec::new();
 
     let project_name = prompt_input("Project name: ")?;
-    let author = prompt_input("Authors: ")?;
-    let license = prompt_input("License: ")?;
-    let repository = prompt_input("Repository URL: ")?;
+    let author = prompt_input("Authors: [name <name@example.org-name2 <name2@example.org>] ")?;
+    let license = prompt_input("License: [LICENSE1-LICENSE2-LICENSE3] ")?;
+
+    let path = env::current_dir()?;
+    let repository = format!("{}/repo/", path.display());
 
     for (license_words, author_words) in license.split("-").zip(author.split("-")) {
         splited_license.push(license_words.to_string());
@@ -71,15 +107,13 @@ pub fn init_cmd() -> io::Result<()> {
 name = "{}"
 authors = {:?} 
 license = {:?}
-repository = "{}"
-
-"#,
+repository = "{}""#,
         project_name, splited_authors, splited_license, repository
     );
 
     create_folder()?;
 
-    match File::create(".sk/config") {
+    match File::create(CONFIG_PATH) {
         Ok(mut file) => {
             if let Err(e) = file.write_all(setup_template.trim().as_bytes()) {
                 eprintln!(
@@ -88,7 +122,16 @@ repository = "{}"
                 );
                 return Err(e);
             } else {
-                println!("Configuration file was successfully saved in the {BOLD}.sk{ENDCOLOR} directory.")
+                println!(
+                    r#"
+Your {BOLD}.sk{ENDCOLOR} was successfully created.
+The project directory where the configuration file is located named {BOLD}.sk{ENDCOLOR}
+The front-end and back-end parts of the online server are located in a {BOLD}public{ENDCOLOR} directory.
+
+If you want to start the server, you can write {BOLD}npm install && npm start{ENDCOLOR}. Make sure that {BOLD}npm{ENDCOLOR} & {BOLD}node.js{ENDCOLOR} is already installed.
+"#
+                );
+                process::exit(1);
             }
         }
         Err(e) => {
@@ -96,6 +139,4 @@ repository = "{}"
             return Err(e);
         }
     }
-
-    Ok(())
 }

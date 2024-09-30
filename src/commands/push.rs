@@ -2,7 +2,7 @@ use serde::Deserialize;
 use std::{fs, path::Path};
 use toml;
 
-use crate::utilities::constants::{BOLD, COMMIT_PATH, CONFIG_PATH, ENDCOLOR};
+use crate::utilities::constants::{BOLD, COMMIT_PATH, CONFIG_PATH, ENDCOLOR, SK_PATH};
 
 #[derive(Deserialize)]
 struct Modifications {
@@ -29,7 +29,7 @@ pub fn push_cmd() -> std::io::Result<()> {
     let conf: ConfigConfig =
         toml::from_str(&config_file_content).expect("Error parsing {CONFIG_PATH} TOML file.");
 
-    if !Path::new(".sk").is_dir() {
+    if !Path::new(SK_PATH).is_dir() {
         println!("The directory doesn't exist! Use {BOLD}sk init{ENDCOLOR} to initialize it.");
 
         return Ok(());

@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>File List</title>
-    <!-- Include marked.js from a CDN -->
+    <link rel="stylesheet" href="./style/style.css" />
+    <title class="names"></title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   </head>
   <body>
@@ -45,15 +44,17 @@
         </div>
         <hr />
         <div class="LICENSE">
-          <p>
-            <b
-              ><a
-                href="/api/license"
-                style="text-decoration: none; font-size: 25px"
-                >LICENSE</a
-              ></b
-            >
-          </p>
+          <div class="cont">
+            <p>
+              <b
+                ><a
+                  href="/api/license"
+                  style="text-decoration: none; font-size: 25px"
+                  >LICENSE</a
+                ></b
+              >
+            </p>
+          </div>
           <pre
             class="license"
             style="font-family: 'Courier New', Courier, monospace"
@@ -61,6 +62,6 @@
         </div>
       </div>
     </div>
-    <script src="./fetch.js"></script>
+    <script src="./js/fetch.js"></script>
   </body>
 </html>

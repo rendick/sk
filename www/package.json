@@ -1,6 +1,21 @@
 {
+  "name": "sk",
+  "version": "1.0.0",
+  "description": "Project Description",
+  "main": "public/js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node public/js/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "the repositories url"
+  },
   "dependencies": {
     "express": "^4.21.0",
-    "marked": "^14.1.2"
-  }
+    "marked": "^14.1.2",
+    "toml": "^3.0.0"
+  },
+  "author": "your name",
+  "license": "N/A"
 }

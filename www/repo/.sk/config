@@ -1,0 +1,5 @@
+[project]
+name = "sk"
+authors = ["rendick <rendick123@proton.me>"] 
+license = ["LGPL"]
+repository = "/home/rendick/Projects/sk-web/dir/"

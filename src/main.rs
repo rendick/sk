@@ -5,34 +5,35 @@ use std::process;
 mod commands {
     pub mod add;
     pub mod clean;
+    pub mod clone;
     pub mod commit;
     pub mod info;
     pub mod init;
     pub mod logs;
     pub mod pull;
     pub mod push;
-    pub mod clone;
 }
 
 use commands::add;
 use commands::clean;
+use commands::clone;
 use commands::commit;
 use commands::info;
 use commands::init;
 use commands::logs;
 use commands::pull;
 use commands::push;
-use commands::clone;
 
 mod utilities {
     pub mod constants;
     pub mod prompt;
+    pub mod www;
 }
 
 use crate::utilities::constants::{CONFIG_PATH, HELP, VERSION};
 
 fn main() {
-    let supported_archs = ["x86_64", "x86", "arm", "riscv64"];
+    let supported_archs = ["x86_64", "x86", "arm", "riscv64", "aarch64"];
     if !supported_archs.contains(&env::consts::ARCH) {
         println!("sk doesn't support your CPU currently.");
         process::exit(1)

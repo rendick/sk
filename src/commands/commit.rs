@@ -33,12 +33,10 @@ fn write_logs(commit_name: &str) -> std::io::Result<()> {
 }
 
 pub fn commit_cmd(name: &str) -> io::Result<()> {
-    println!("1");
     if !Path::new(CHANGES_PATH).exists() {
-        println!("{BOLD}{CHANGES_PATH}{ENDCOLOR} not created.\nChanges not staged for commit:\nUse {BOLD}git add <file>...{ENDCOLOR} to update what will be committed.");
+        println!("{BOLD}{CHANGES_PATH}{ENDCOLOR} not created.\nChanges not staged for commit:\nUse {BOLD}sk add <file>...{ENDCOLOR} to update what will be committed.");
         return Ok(());
     }
-        println!("1");
     if Path::new(COMMIT_PATH).exists() {
         println!("{BOLD}{COMMIT_PATH}{ENDCOLOR} file already created.");
         return Ok(());
