@@ -1,0 +1,20 @@
+{
+  "name": "N/A",
+  "version": "x.x.x",
+  "description": "N/A",
+  "main": "public/js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node public/js/index.js"
+  },
+  "repository": {
+    "url": "N/A"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "marked": "^14.1.2",
+    "toml": "^3.0.0"
+  },
+  "author": "N/A",
+  "license": "N/A"
+}

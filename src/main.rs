@@ -1,5 +1,4 @@
 use std::env;
-use std::path::Path;
 use std::process;
 
 mod commands {
@@ -12,6 +11,7 @@ mod commands {
     pub mod logs;
     pub mod pull;
     pub mod push;
+    pub mod rm;
 }
 
 use commands::add;
@@ -23,6 +23,7 @@ use commands::init;
 use commands::logs;
 use commands::pull;
 use commands::push;
+use commands::rm;
 
 mod utilities {
     pub mod constants;
@@ -30,20 +31,13 @@ mod utilities {
     pub mod www;
 }
 
-use crate::utilities::constants::{CONFIG_PATH, HELP, VERSION};
+use crate::utilities::constants::{HELP, VERSION};
 
 fn main() {
     let supported_archs = ["x86_64", "x86", "arm", "riscv64", "aarch64"];
     if !supported_archs.contains(&env::consts::ARCH) {
         println!("sk doesn't support your CPU currently.");
         process::exit(1)
-    }
-
-    let config_file_path_check = Path::new(CONFIG_PATH);
-    if !config_file_path_check.exists() {
-        if let Err(e) = init::init_cmd() {
-            eprintln!("Error initializing: {}", e)
-        }
     }
 
     let args: Vec<String> = env::args().collect();
@@ -79,6 +73,10 @@ fn main() {
         Some("clean") => clean::clean_cmd(),
         Some("help") | Some("--help") | Some("-h") => println!("{}", HELP),
         Some("version") | Some("--version") | Some("-v") => println!("{}", VERSION),
+        Some("rm") => {
+            let files: Vec<String> = args[2..].to_vec();
+            rm::rm_cmd(files).expect("Error running this function.")
+        }
         _ => println!(
             "sk: {} is not a sk command. Try 'sk --help' for more information.",
             args.get(1).as_slice()[0]

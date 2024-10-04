@@ -128,8 +128,7 @@ Your {BOLD}.sk{ENDCOLOR} was successfully created.
 The project directory where the configuration file is located named {BOLD}.sk{ENDCOLOR}
 The front-end and back-end parts of the online server are located in a {BOLD}public{ENDCOLOR} directory.
 
-If you want to start the server, you can write {BOLD}npm install && npm start{ENDCOLOR}. Make sure that {BOLD}npm{ENDCOLOR} & {BOLD}node.js{ENDCOLOR} is already installed.
-"#
+If you want to start the server, you can write {BOLD}npm install && npm start{ENDCOLOR}. Make sure that {BOLD}npm{ENDCOLOR} & {BOLD}node.js{ENDCOLOR} is already installed."#
                 );
                 process::exit(1);
             }

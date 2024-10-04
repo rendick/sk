@@ -51,7 +51,7 @@ app.get("/file", (req, res) => {
 
 function pageOptimize(dir, file_link,  file, errormsg) {
   app.get(`/${file_link}`, (req, res) => {
-    const logFilePath = path.join(directoryPath, dir, file);
+    const logFilePath = path.join(dir, file);
 
     let content = errormsg;
 

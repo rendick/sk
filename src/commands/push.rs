@@ -31,7 +31,6 @@ pub fn push_cmd() -> std::io::Result<()> {
 
     if !Path::new(SK_PATH).is_dir() {
         println!("The directory doesn't exist! Use {BOLD}sk init{ENDCOLOR} to initialize it.");
-
         return Ok(());
     }
 
@@ -45,7 +44,6 @@ pub fn push_cmd() -> std::io::Result<()> {
             Please check {BOLD}{CONFIG_PATH}{ENDCOLOR} for the existence of a repository path.",
             conf.project.repository
         );
-
         return Ok(());
     }
 
@@ -54,23 +52,19 @@ pub fn push_cmd() -> std::io::Result<()> {
         toml::from_str(&commit_file_content).expect("Error parsing {COMMIT_PATH} TOML file.");
 
     for x in commit.modifications.changes.iter() {
-        let src_path = Path::new(x);
+        let src_path = Path::new(x.trim());
         let rel_path = src_path;
         let dest_path = Path::new(&conf.project.repository).join(rel_path);
 
-        if Path::new(x).is_dir() {
-            println!("Creating directory: {}", dest_path.display());
-            fs::create_dir_all(&dest_path)?;
+        // Deleting files or directories if they exist
+        if src_path.is_dir() {
+            println!("Removing directory: {}", src_path.display());
+            fs::remove_dir_all(src_path)?;
         } else if src_path.is_file() {
-            println!("Copying file {} to {}", x, dest_path.display());
-
-            if let Some(parent) = dest_path.parent() {
-                fs::create_dir_all(parent)?;
-            }
-
-            fs::copy(x, &dest_path)?;
+            println!("Removing file: {}", src_path.display());
+            fs::remove_file(src_path)?;
         } else {
-            eprintln!("Skipping: {} is not a file or directory", x);
+            eprintln!("Skipping: {} is not a file or directory", src_path.display());
         }
     }
 
